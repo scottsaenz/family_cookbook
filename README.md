@@ -1,7 +1,12 @@
-# Cookbook From Physical
+# Family Cookbook
 
-Extract recipes from photos of cookbooks, magazine clippings, and handwritten recipe cards into
-tagged Markdown files — then serve them as a searchable static website.
+A searchable static website of family recipes extracted from photos of cookbooks,
+magazine clippings, and handwritten recipe cards — powered by OpenAI GPT-4o Vision
+and published to GitHub Pages.
+
+**Live site:** https://scottsaenz.github.io/cookbook_from_physical *(update after setup)*
+
+---
 
 ## Prerequisites
 
@@ -9,19 +14,21 @@ tagged Markdown files — then serve them as a searchable static website.
 - [uv](https://docs.astral.sh/uv/) for package management
 - An [OpenAI API key](https://platform.openai.com/api-keys) (GPT-4o is used for vision)
 
-## Quick Start
+---
+
+## Local Development
 
 ```bash
 # Install dependencies
 uv sync
 
-# Set your OpenAI API key
+# Set your OpenAI API key (or add to .env file)
 export OPENAI_API_KEY="sk-..."
 
-# Put recipe images in the images/ directory, then process them
+# Process recipe images into Markdown
 uv run python -m cookbook_from_physical.process_recipes images/
 
-# Build the recipe index page
+# Regenerate the recipe index and tags page
 uv run python -m cookbook_from_physical.build_index
 
 # Preview the site locally
@@ -30,9 +37,73 @@ uv run zensical serve
 
 Open <http://127.0.0.1:8000> to browse your recipes.
 
-## Usage
+---
 
-### 1. Process recipe images
+## Deploying to GitHub Pages
+
+### 1. Create the GitHub repository
+
+1. Go to <https://github.com/new>
+2. Name it `cookbook_from_physical` (or any name you like)
+3. Set it to **Public** (required for free GitHub Pages)
+4. Do **not** add a README or .gitignore — the repo should be empty
+
+### 2. Update `site_url` in `mkdocs.yml`
+
+Open `mkdocs.yml` and set `site_url` to your GitHub Pages URL:
+
+```yaml
+site_url: https://<your-github-username>.github.io/cookbook_from_physical
+```
+
+Commit the change:
+
+```bash
+git add mkdocs.yml
+git commit -m "Set site_url for GitHub Pages"
+```
+
+### 3. Push to GitHub
+
+```bash
+git remote add origin https://github.com/<your-github-username>/cookbook_from_physical.git
+git push -u origin main
+```
+
+### 4. Enable GitHub Pages
+
+1. Go to your repo on GitHub → **Settings** → **Pages**
+2. Under **Source**, select **Deploy from a branch**
+3. Set the branch to **`gh-pages`** / **`/ (root)`**
+4. Click **Save**
+
+The GitHub Actions workflow (`.github/workflows/deploy.yml`) will automatically
+build and deploy the site to `gh-pages` on every push to `main`. The first
+deployment takes about 2-3 minutes.
+
+---
+
+## Adding New Recipes
+
+```bash
+# 1. Put new recipe images in images/
+# 2. Process them (skips already-processed images by default)
+uv run python -m cookbook_from_physical.process_recipes images/
+
+# 3. Rebuild the index
+uv run python -m cookbook_from_physical.build_index
+
+# 4. Commit and push — GitHub Actions deploys automatically
+git add docs/
+git commit -m "Add new recipes"
+git push
+```
+
+---
+
+## CLI Reference
+
+### `process-recipes`
 
 ```bash
 uv run python -m cookbook_from_physical.process_recipes <image-directory> [options]
@@ -42,97 +113,38 @@ uv run python -m cookbook_from_physical.process_recipes <image-directory> [optio
 |--------|---------|-------------|
 | `-o`, `--output` | `docs/recipes` | Output directory for Markdown files |
 | `--model` | `gpt-4o` | OpenAI model to use |
-| `--api-key` | `$OPENAI_API_KEY` | API key (or set the env var) |
-| `--no-skip` | off | Re-process images that already have markdown |
+| `--api-key` | `$OPENAI_API_KEY` | API key (or set the env var / `.env` file) |
+| `--no-skip` | off | Re-process images that already have Markdown |
 
-Supported image formats: JPG, PNG, WebP, GIF, TIFF, BMP, HEIC.
+Supported formats: JPG, PNG, WebP, GIF, TIFF, BMP, HEIC.
 
-The script sends each image to OpenAI's vision model, extracts the recipe, and writes a
-Markdown file with YAML frontmatter containing title, tags, source type, and timing info.
-
-### 2. Build the recipe index
+### `build-index`
 
 ```bash
 uv run python -m cookbook_from_physical.build_index
 ```
 
-Generates `docs/recipes/index.md` with all recipes grouped by meal type.
+Regenerates `docs/recipes/index.md` (grouped by meal type) and `docs/tags.md`
+(alphabetical tag listing). Run this after adding new recipes.
 
-### 3. Serve or build the site
-
-```bash
-# Local development server with hot reload
-uv run zensical serve
-
-# Build static site for deployment
-uv run zensical build
-```
-
-The built site goes to `site/` and can be deployed to any static host (GitHub Pages,
-Netlify, Vercel, etc.).
+---
 
 ## Project Structure
 
 ```
 cookbook_from_physical/
-├── images/              # Drop recipe images here
-├── docs/
-│   ├── index.md         # Site home page
-│   ├── tags.md          # Auto-generated tag index
-│   ├── recipes/         # Generated recipe markdown files
-│   └── stylesheets/
-│       └── extra.css
+├── .github/workflows/
+│   └── deploy.yml           # GitHub Actions → GitHub Pages
 ├── cookbook_from_physical/
 │   ├── process_recipes.py   # Image → Markdown pipeline
-│   └── build_index.py       # Recipe index page generator
-├── mkdocs.yml           # Zensical/MkDocs configuration
-└── pyproject.toml       # Project & dependency config (uv)
-```
-
-## Recipe Markdown Format
-
-Each generated recipe looks like:
-
-```markdown
----
-title: Chicken Parmesan
-tags:
-- chicken
-- dinner
-- italian
-- baking
-source_type: cookbook
-source_name: "Joy of Cooking"
-prep_time: 20 minutes
-cook_time: 35 minutes
-servings: "4"
-source_image: IMG_1234.jpg
----
-
-# Chicken Parmesan
-
-**Prep:** 20 minutes | **Cook:** 35 minutes | **Servings:** 4
-
-## Ingredients
-
-- 4 boneless chicken breasts
-- 1 cup breadcrumbs
-- ...
-
-## Instructions
-
-1. Preheat oven to 400°F.
-2. ...
-
-## Notes
-
-Great with spaghetti and garlic bread.
-```
-
-## Deploying to GitHub Pages
-
-Build the site then push the `site/` directory to your `gh-pages` branch:
-
-```bash
-uv run zensical build
+│   └── build_index.py       # Recipe index + tags page generator
+├── docs/
+│   ├── index.md             # Site home page
+│   ├── tags.md              # Tag browsing page (auto-generated)
+│   ├── recipes/             # Generated recipe Markdown files
+│   └── stylesheets/
+│       └── extra.css
+├── images/                  # Source recipe photos (git-ignored)
+├── mkdocs.yml               # Zensical site configuration
+└── pyproject.toml           # uv project & dependencies
 ```
