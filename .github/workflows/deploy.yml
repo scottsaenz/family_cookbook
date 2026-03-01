@@ -29,7 +29,7 @@ jobs:
         run: uv sync
 
       - name: Build recipe index and tags page
-        run: uv run python -m cookbook_from_physical.build_index
+        run: uv run python -m family_cookbook.build_index
 
       - name: Build and deploy site
         run: uv run zensical build

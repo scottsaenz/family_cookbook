@@ -4,7 +4,7 @@ A searchable static website of family recipes extracted from photos of cookbooks
 magazine clippings, and handwritten recipe cards — powered by OpenAI GPT-4o Vision
 and published to GitHub Pages.
 
-**Live site:** https://scottsaenz.github.io/cookbook_from_physical *(update after setup)*
+**Live site:** https://scottsaenz.github.io/family_cookbook *(update after setup)*
 
 ---
 
@@ -26,10 +26,10 @@ uv sync
 export OPENAI_API_KEY="sk-..."
 
 # Process recipe images into Markdown
-uv run python -m cookbook_from_physical.process_recipes images/
+uv run python -m family_cookbook.process_recipes images/
 
 # Regenerate the recipe index and tags page
-uv run python -m cookbook_from_physical.build_index
+uv run python -m family_cookbook.build_index
 
 # Preview the site locally
 uv run zensical serve
@@ -44,7 +44,7 @@ Open <http://127.0.0.1:8000> to browse your recipes.
 ### 1. Create the GitHub repository
 
 1. Go to <https://github.com/new>
-2. Name it `cookbook_from_physical` (or any name you like)
+2. Name it `family_cookbook` (or any name you like)
 3. Set it to **Public** (required for free GitHub Pages)
 4. Do **not** add a README or .gitignore — the repo should be empty
 
@@ -53,7 +53,7 @@ Open <http://127.0.0.1:8000> to browse your recipes.
 Open `mkdocs.yml` and set `site_url` to your GitHub Pages URL:
 
 ```yaml
-site_url: https://<your-github-username>.github.io/cookbook_from_physical
+site_url: https://<your-github-username>.github.io/family_cookbook
 ```
 
 Commit the change:
@@ -66,7 +66,7 @@ git commit -m "Set site_url for GitHub Pages"
 ### 3. Push to GitHub
 
 ```bash
-git remote add origin https://github.com/<your-github-username>/cookbook_from_physical.git
+git remote add origin https://github.com/<your-github-username>/family_cookbook.git
 git push -u origin main
 ```
 
@@ -88,10 +88,10 @@ deployment takes about 2-3 minutes.
 ```bash
 # 1. Put new recipe images in images/
 # 2. Process them (skips already-processed images by default)
-uv run python -m cookbook_from_physical.process_recipes images/
+uv run python -m family_cookbook.process_recipes images/
 
 # 3. Rebuild the index
-uv run python -m cookbook_from_physical.build_index
+uv run python -m family_cookbook.build_index
 
 # 4. Commit and push — GitHub Actions deploys automatically
 git add docs/
@@ -106,7 +106,7 @@ git push
 ### `process-recipes`
 
 ```bash
-uv run python -m cookbook_from_physical.process_recipes <image-directory> [options]
+uv run python -m family_cookbook.process_recipes <image-directory> [options]
 ```
 
 | Option | Default | Description |
@@ -121,7 +121,7 @@ Supported formats: JPG, PNG, WebP, GIF, TIFF, BMP, HEIC.
 ### `build-index`
 
 ```bash
-uv run python -m cookbook_from_physical.build_index
+uv run python -m family_cookbook.build_index
 ```
 
 Regenerates `docs/recipes/index.md` (grouped by meal type) and `docs/tags.md`
@@ -132,10 +132,10 @@ Regenerates `docs/recipes/index.md` (grouped by meal type) and `docs/tags.md`
 ## Project Structure
 
 ```
-cookbook_from_physical/
+family_cookbook/
 ├── .github/workflows/
 │   └── deploy.yml           # GitHub Actions → GitHub Pages
-├── cookbook_from_physical/
+├── family_cookbook/
 │   ├── process_recipes.py   # Image → Markdown pipeline
 │   └── build_index.py       # Recipe index + tags page generator
 ├── docs/

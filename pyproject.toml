@@ -1,5 +1,5 @@
 [project]
-name = "cookbook-from-physical"
+name = "family-cookbook"
 version = "0.1.0"
 description = "Extract recipes from photos of cookbooks, magazines, and handwritten cards into a searchable static website"
 readme = "README.md"

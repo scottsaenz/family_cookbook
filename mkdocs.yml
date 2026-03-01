@@ -1,6 +1,6 @@
 site_name: Family Cookbook
 site_description: A searchable collection of family recipes extracted from cookbooks, magazines, and handwritten cards
-# Set to your GitHub Pages URL, e.g. https://scottsaenz.github.io/cookbook_from_physical
+# Set to your GitHub Pages URL, e.g. https://scottsaenz.github.io/family_cookbook
 site_url: ""
 
 theme:
