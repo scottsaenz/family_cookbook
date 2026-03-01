@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Environment / secrets
+.env
+
+# MkDocs build output
+site/
+
+# Source recipe images (large binaries — keep locally, don't push)
+images/
+
+# OS files
+.DS_Store
+Thumbs.db

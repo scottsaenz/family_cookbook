@@ -1,0 +1,29 @@
+:root {
+  --md-typeset-font-size: 1rem;
+}
+
+.md-typeset h1 {
+  font-weight: 700;
+  margin-bottom: 0.4em;
+}
+
+.md-typeset h2 {
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  padding-bottom: 0.3em;
+  margin-top: 1.6em;
+}
+
+/* Recipe ingredient lists — slightly more breathing room */
+.md-typeset ul li {
+  margin-bottom: 0.15em;
+}
+
+/* Recipe instruction steps */
+.md-typeset ol li {
+  margin-bottom: 0.5em;
+}
+
+/* Tag chips */
+.md-tags .md-tag {
+  font-size: 0.75rem;
+}
